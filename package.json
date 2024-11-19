@@ -1,0 +1,12 @@
+{
+  "name": "your-package-name",
+  "version": "0.1.0",
+  "description": "Your description",
+  "author": "Your Name <your.email@example.com>",
+  "homepage": "https://github.com/yourusername/your-repo-name#readme",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/your-repo-name.git"
+  }
+}

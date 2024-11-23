@@ -1,66 +1,49 @@
 import React, { useCallback, useState } from "react";
-
 import { Gantt, OnChangeTasks, Task, TaskOrEmpty } from "../src";
-
 import { initTasks, onAddTask, onEditTask } from "./helper";
-
+import { Button } from "../src/components/ui/button";
 import "../dist/style.css";
 
 export const Comparison: React.FC = props => {
   const [tasks, setTasks] = useState<readonly TaskOrEmpty[]>(() => {
     const firstLevelTasks = initTasks();
-
     const secondLevelTasks = firstLevelTasks.map(
       (task) => ({
         ...task,
         comparisonLevel: 2
       } as TaskOrEmpty));
-
     return [...firstLevelTasks, ...secondLevelTasks];
   });
 
-  const onChangeTasks = useCallback<OnChangeTasks>((nextTasks, action) => {
-    switch (action.type) {
-      case "delete_relation":
-        if (
-          window.confirm(
-            `Do yo want to remove relation between ${action.payload.taskFrom.name} and ${action.payload.taskTo.name}?`
-          )
-        ) {
-          setTasks(nextTasks);
-        }
-        break;
-
-      case "delete_task":
-        if (window.confirm("Are you sure?")) {
-          setTasks(nextTasks);
-        }
-        break;
-
-      default:
-        setTasks(nextTasks);
-        break;
-    }
+  const handleTaskChange = useCallback<OnChangeTasks>((updatedTasks) => {
+    setTasks(updatedTasks);
   }, []);
 
-  const handleDblClick = useCallback((task: Task) => {
-    alert("On Double Click event Id:" + task.id);
-  }, []);
-
-  const handleClick = useCallback((task: TaskOrEmpty) => {
-    console.log("On Click event Id:" + task.id);
-  }, []);
+  const handleAddTask = useCallback(() => {
+    setTasks(onAddTask(tasks));
+  }, [tasks]);
 
   return (
-    <Gantt
-      comparisonLevels={2}
-      {...props}
-      onAddTask={onAddTask}
-      onChangeTasks={onChangeTasks}
-      onDoubleClick={handleDblClick}
-      onEditTask={onEditTask}
-      onClick={handleClick}
-      tasks={tasks}
-    />
+    <div className="p-4 space-y-4">
+      <div className="flex gap-2">
+        <Button variant="default" onClick={handleAddTask}>
+          Add Task
+        </Button>
+        <Button variant="outline" onClick={() => setTasks(initTasks())}>
+          Reset Tasks
+        </Button>
+      </div>
+      
+      <div style={{ height: "400px" }}>
+        <Gantt
+          tasks={tasks}
+          onChangeTasks={handleTaskChange}
+          viewMode={"Day"}
+          columnWidth={60}
+          listCellWidth={"155px"}
+          ganttHeight={300}
+        />
+      </div>
+    </div>
   );
 };

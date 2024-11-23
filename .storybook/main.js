@@ -2,7 +2,9 @@ const { mergeConfig } = require('vite');
 const path = require('path');
 
 module.exports = {
-  stories: ['../stories/**/*.stories.mdx'],
+  stories: [
+    '../stories/**/*.stories.@(js|jsx|ts|tsx)'
+  ],
 
   framework: {
     name: '@storybook/react-vite',
@@ -10,29 +12,34 @@ module.exports = {
   },
 
   addons: [
-    '@storybook/preset-create-react-app',
-    '@storybook/addon-controls',
-    '@storybook/addon-docs',
+    '@storybook/addon-essentials',
+    '@storybook/addon-links',
+    '@storybook/addon-actions'
   ],
 
-  features: {
-    storyStoreV7: true,
-    previewMdx2: true,
+  core: {
+    disableTelemetry: true,
+    builder: {
+      name: '@storybook/builder-vite',
+      options: {
+        fastRefresh: true,
+      },
+    },
   },
 
   async viteFinal(config) {
     return mergeConfig(config, {
-      base: "./",
-
       resolve: {
         alias: {
-          assert: path.resolve(__dirname, './assert_fallback.cjs'),
+          '@': path.resolve(__dirname, '../src'),
+        },
+      },
+      server: {
+        watch: {
+          usePolling: true,
+          interval: 1000,
         },
       },
     });
   },
-
-  docs: {
-    autodocs: true
-  }
 };

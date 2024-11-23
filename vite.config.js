@@ -1,27 +1,40 @@
-import image from "@rollup/plugin-image";
-import react from "@vitejs/plugin-react";
-import path from "node:path";
-import peerDepsExternal from "rollup-plugin-peer-deps-external";
-import { defineConfig } from "vite";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import dts from 'vite-plugin-dts';
+import { resolve } from 'path';
 
-export default defineConfig(() => {
-  const configuration = {
-    plugins: [peerDepsExternal(), react(), image()],
-    build: {
-      minify: false,
-      lib: {
-        name: "gantt-task-react",
-        entry: path.resolve(__dirname, "src/index.tsx"),
-        formats: ["es", "umd"],
-        fileName: format => `gantt-task-react.${format}.js`,
-      },
+export default defineConfig({
+  plugins: [
+    react(),
+    dts({
+      insertTypesEntry: true,
+    }),
+  ],
+  build: {
+    lib: {
+      entry: resolve(__dirname, 'src/index.tsx'),
+      name: 'GanttTaskReact',
+      formats: ['es', 'umd'],
+      fileName: (format) => `gantt-task-react.${format}.js`,
     },
-    test: {
-      environment: "jsdom",
-      coverage: {
-        reporter: ["text", "html"],
-      },
-    },
-  };
-  return configuration;
+    rollupOptions: {
+      external: ['react', 'react-dom', '@mui/material', '@mui/icons-material', '@emotion/react', '@emotion/styled', '@floating-ui/react', '@floating-ui/dom', 'date-fns'],
+      output: {
+        globals: {
+          react: 'React',
+          'react-dom': 'ReactDOM',
+          '@mui/material': 'MuiMaterial',
+          '@mui/icons-material': 'MuiIcons',
+          '@emotion/react': 'EmotionReact',
+          '@emotion/styled': 'EmotionStyled',
+          '@floating-ui/react': 'FloatingUIReact',
+          '@floating-ui/dom': 'FloatingUIDOM',
+          'date-fns': 'DateFns'
+        }
+      }
+    }
+  },
+  server: {
+    open: '/example/index.html',
+  },
 });

@@ -1,20 +1,15 @@
-import { Meta, Story } from '@storybook/addon-docs';
-
+import { Canvas, Meta, Story } from '@storybook/blocks';
 import { Gantt } from '../src';
-
 import { Comparison } from './Comparison';
 
-<Meta
-  title="Comparison"
-  component={Gantt}
-/>
+<Meta title="Examples/Comparison" component={Gantt} />
 
-export const Template = (props) => {
-  return <Comparison {...props} />;
-}
+# Comparison Example
 
-# Comparison example
+This example shows how to use the Gantt chart component with comparison functionality.
 
-<Story name="Comparison">
-  {Template.bind({})}
-</Story>
+<Canvas>
+  <Story name="Default">
+    <Comparison />
+  </Story>
+</Canvas>
